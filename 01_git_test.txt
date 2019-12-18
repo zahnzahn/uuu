@@ -1,0 +1,110 @@
+IO操作：
+    IO指数据流的输入输出,从计算机应用层编程层面来说,
+    在内存中存在数据交换的操作一般认为
+    是IO操作,比如和终端交互 ,和磁盘交互,和网络交互等
+
+打开文件：
+    file_object = open(file_name, access_mode='r', buffering=-1)
+    buffering 1表示有行缓冲,默认则表示使用系统默认提供的缓冲机制。
+    如果文件不存在，open()函数就会抛出一个 IOError 的错误，并且给出错
+    误码和详细的信息告诉你文件不存在。可以根据异常机制来判断文件是否存在
+
+    由于文件读写时都有可能产生 IOError，一旦出错，后面的 f.close()就
+    不会调用。所以，为了保证无论是否出错都能正确地关闭文件，我们可以使用
+    try ... finally 来实现：
+     try:
+        f = open('/path/to/file', 'r')
+        print(f.read())
+     finally:
+        if f:
+        f.close()
+
+
+    文件对象本身也是一个可迭代对象
+        for line in f:
+            print(line)
+
+with方法：
+    通过with方法可以不用close(),因为with生成的对象在语句块结束后会自动处理,
+    所以也就不需要close了,但是这个文件对象只能在with语句块内使用。
+        with open('file','r+') as f:
+            f.read()
+
+读文件：
+    read(字节数)  直接读取 参数默认-1，或者参数为负时 文件将被直接读取到末尾
+    readline(字节数) 读一行 参数为负或者-1时默认一行读完
+                    参数代表读这一行的多少个字节
+    readlinse()  读取文件中的每一行作为列表中的一项
+                 参数: 如果没有给定size参数(默认值为-1)或者size值为负,
+                 文件将被读取直至末尾(这一行的末尾),
+                 给定size表示读取到size字符所在行为止。
+
+写文件:
+    write(string)
+    功能: 把文本数据或二进制数据块的字符串写入到文件中去
+    参数:要写入的内容
+    返回值:写入的字符个数
+    如果需要换行要自己在写入内容中添加\n
+    writelines(str_list)
+    功能:接受一个字符串列表作为参数,将它们写入文件。
+    参数: 要写入的内容列表
+
+缓冲区：
+    flush() 刷新缓冲区
+
+偏移量：
+    tell() 获取文件偏移量大小
+
+    seek(offset[,whence]) 移动文件偏移量位置
+        可以有两个参数，参数:offset 代表相对于某个位置移动的字节数。
+        负数表示向前移动,正数表示向后移动。
+        whence是基准位置的默认值为 0,代表从文件开头算起,1代表从当前位置算起,2 代表从文件末
+        尾算起。
+        必须以二进制方式打开文件时基准位置才能是1或者2
+
+文件目录操作：
+    # 查看当前目录的绝对路径:
+    >>> os.path.abspath('.') '/Users/michael'
+    # 在某个目录下创建一个新目录，首先把新目录的完整路径表示出来:
+    >>> os.path.join('/Users/michael', 'testdir') '/Users/michael/testdir'
+    # 然后创建一个目录:
+    >>> os.mkdir('/Users/michael/testdir')
+    # 删掉一个目录:
+    >>> os.rmdir('/Users/michael/testdir')
+
+文件管理函数：
+    1. 获取文件大小
+        os.path.getsize(file)
+    2. 查看文件列表
+        os.listdir(dir)
+    3. 查看文件是否存在
+        os.path.exists(file)
+    4. 判断文件类型
+        os.path.isfile(file)
+    5. 删除文件
+        os.remove(file)
+
+文件描述符：
+    系统中每一个IO操作都会分配一个整数作为编号,该整数即这个IO操作的文件描述符。
+    fileno()    通过IO对象获取对应的文件描述符
+
+同样的道理，要拆分路径时，也不要直接去拆字符串，而要通过
+os.path.split()函数，这样可以把一个路径拆分为两部分，后一部分总
+是最后级别的目录或文件名：
+>>> os.path.split('/Users/michael/testdir/file.txt')
+           得到结果('/Users/michael/testdir', 'file.txt')
+
+os.path.splitext()可以直接让你得到文件扩展名，很多时候非常方便：
+>>> os.path.splitext('/path/to/file.txt')
+           得到结果('/path/to/file', '.txt')
+
+
+
+
+
+
+
+
+
+
+
